@@ -13,11 +13,17 @@ mongoose
   })
   .catch(console.error);
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: "6851e5168dcc718b94e0b4d3",
+  };
+  next();
+});
+
 app.use(express.json());
 //app.use allows us to register routes & middleware
 //("/") -> the root route
-app.use("/", indexRouter);
-app.use("/items", itemsRouter); //Mounting the item Router
+app.use("/", indexRouter); //Mounting the users & item Router
 
 //the listen method can accept 2 parameters -> (the port number, an anomynouse callback function)
 app.listen(PORT, () => {

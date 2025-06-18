@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const Item = require("../models/clothingItem");
 const {
   BAD_REQUEST,
@@ -42,9 +41,6 @@ const createItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
-  }
   return Item.findById(itemId)
     .orFail(() => {
       const error = new Error("Item not found");
@@ -75,9 +71,6 @@ const deleteItem = (req, res) => {
 const likeItem = (req, res) => {
   const { itemId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
-  }
   Item.findById(itemId)
     .orFail(() => {
       const error = new Error("Item not found");
@@ -111,10 +104,6 @@ const likeItem = (req, res) => {
 // DELETE /items/:itemId/likes — Unlike an item
 const dislikeItem = (req, res) => {
   const { itemId } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
-  }
 
   Item.findById(itemId)
     .orFail(() => {

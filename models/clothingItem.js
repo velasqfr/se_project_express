@@ -28,13 +28,15 @@ const clothingItemSchema = new mongoose.Schema({
     required: true,
     ref: "user",
   },
-  likes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
-      default: [],
-    },
-  ],
+  likes: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
+    default: [],
+  },
 });
 
 module.exports = mongoose.model("item", clothingItemSchema);

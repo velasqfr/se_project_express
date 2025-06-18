@@ -80,7 +80,7 @@ const likeItem = (req, res) => {
     .then(() =>
       Item.findByIdAndUpdate(
         itemId,
-        { $pull: { likes: req.user._id } },
+        { $addToSet: { likes: req.user._id } }, //ikeItem uses $addToSet to add a user ID to the likes array (and prevents duplicates)
         { new: true }
       )
     )
@@ -97,7 +97,7 @@ const likeItem = (req, res) => {
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Error unliking item", error: err.message });
+        .send({ message: "Error liking item", error: err.message });
     });
 };
 
@@ -114,7 +114,7 @@ const dislikeItem = (req, res) => {
     .then(() =>
       Item.findByIdAndUpdate(
         itemId,
-        { $pull: { likes: req.user._id } },
+        { $pull: { likes: req.user._id } }, //dislikeItem uses $pull to remove a user ID from the likes arra
         { new: true }
       )
     )

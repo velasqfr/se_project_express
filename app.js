@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
-const itemsRouter = require("./routes/clothingItems");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -9,7 +8,7 @@ const { PORT = 3001 } = process.env;
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
-    console.log("Connected to DB");
+    console.error("Connected to DB");
   })
   .catch(console.error);
 
@@ -21,11 +20,11 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-//app.use allows us to register routes & middleware
-//("/") -> the root route
-app.use("/", indexRouter); //Mounting the users & item Router
+// app.use allows us to register routes & middleware
+// ("/") -> the root route
+app.use("/", indexRouter); // Mounting the users & item Router
 
-//the listen method can accept 2 parameters -> (the port number, an anomynouse callback function)
+// the listen method can accept 2 parameters -> (the port number, an anomynouse callback function)
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.error(`Listening on port ${PORT}`);
 });

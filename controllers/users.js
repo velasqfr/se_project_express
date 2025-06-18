@@ -18,7 +18,7 @@ const getUsers = (req, res) => {
     });
 };
 
-//POST /users
+// POST /users
 
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
@@ -29,15 +29,15 @@ const createUser = (req, res) => {
       console.error(err);
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: err.message });
-      } else {
+      } 
         return res
           .status(INTERNAL_SERVICE_ERROR)
           .send({ message: "Invalid user data", error: err.message });
-      }
+      
     });
 };
 
-//Get /users/:userID
+// Get /users/:userID
 
 const getUser = (req, res) => {
   const { userId } = req.params;
@@ -51,7 +51,7 @@ const getUser = (req, res) => {
         return res
           .status(NOT_FOUND)
           .send({ message: "User not found", error: err.message });
-      } else if (err.name === "CastError") {
+      } if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: err.message });
       }
       return res

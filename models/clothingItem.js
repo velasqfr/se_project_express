@@ -35,7 +35,7 @@ const clothingItemSchema = new mongoose.Schema({
         ref: "user",
       },
     ],
-    default: [],
+    default: [], // default: [] ensures it's an empty array by default.
   },
 });
 

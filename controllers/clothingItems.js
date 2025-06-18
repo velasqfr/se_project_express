@@ -5,7 +5,7 @@ const {
   INTERNAL_SERVICE_ERROR,
 } = require("../utils/errors");
 
-//GET /items
+// GET /items
 const getItems = (req, res) => {
   Item.find({})
     .then((items) => res.status(200).send(items))
@@ -17,7 +17,7 @@ const getItems = (req, res) => {
     });
 };
 
-//POST /items
+// POST /items
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
@@ -37,7 +37,7 @@ const createItem = (req, res) => {
     });
 };
 
-//DELETE /items/:itemId
+// DELETE /items/:itemId
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -80,7 +80,7 @@ const likeItem = (req, res) => {
     .then(() =>
       Item.findByIdAndUpdate(
         itemId,
-        { $addToSet: { likes: req.user._id } }, //ikeItem uses $addToSet to add a user ID to the likes array (and prevents duplicates)
+        { $addToSet: { likes: req.user._id } }, // ikeItem uses $addToSet to add a user ID to the likes array (and prevents duplicates)
         { new: true }
       )
     )
@@ -114,7 +114,7 @@ const dislikeItem = (req, res) => {
     .then(() =>
       Item.findByIdAndUpdate(
         itemId,
-        { $pull: { likes: req.user._id } }, //dislikeItem uses $pull to remove a user ID from the likes arra
+        { $pull: { likes: req.user._id } }, // dislikeItem uses $pull to remove a user ID from the likes arra
         { new: true }
       )
     )

@@ -12,7 +12,9 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVICE_ERROR)
+        .send({ message: "Invalid user data", error: err.message });
     });
 };
 
@@ -30,7 +32,7 @@ const createUser = (req, res) => {
       } else {
         return res
           .status(INTERNAL_SERVICE_ERROR)
-          .send({ message: err.message });
+          .send({ message: "Invalid user data", error: err.message });
       }
     });
 };
@@ -46,11 +48,15 @@ const getUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res
+          .status(NOT_FOUND)
+          .send({ message: "User not found", error: err.message });
       } else if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: err.message });
       }
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVICE_ERROR)
+        .send({ message: "Failed to retrieve user", error: err.message });
     });
 };
 

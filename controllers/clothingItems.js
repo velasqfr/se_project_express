@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Item = require("../models/clothingItem");
 const {
   BAD_REQUEST,
@@ -11,7 +12,9 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVICE_ERROR)
+        .send({ message: "Failed to retrieve users", error: err.message });
     });
 };
 
@@ -25,28 +28,122 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid item data" });
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid item data", error: err.message });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Internal Server Error", err });
+        .send({ message: "Internal Server Error", error: err.message });
     });
 };
 
 //DELETE /items/:itemId
 const deleteItem = (req, res) => {
-  Item.findByIdAndDelete(req.params.itemId)
-    .then((item) => {
-      if (!item) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
-      }
-      return res.send({ message: "Item deleted successfully", item });
+  const { itemId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
+  }
+  return Item.findById(itemId)
+    .orFail(() => {
+      const error = new Error("Item not found");
+      error.statusCode = NOT_FOUND;
+      throw error;
     })
+    .then(() => Item.findByIdAndDelete(itemId))
+    .then((deletedItem) =>
+      res.send({ message: "Item deleted successfully", item: deletedItem })
+    )
     .catch((err) => {
       console.error(err);
-      res
+      if (err.statusCode === NOT_FOUND) {
+        return res.status(NOT_FOUND).send({ message: err.message });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid ID format", error: err.message });
+      }
+      return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Error deleting item", err });
+        .send({ message: "Error deleting item", error: err.message });
     });
 };
-module.exports = { getItems, createItem, deleteItem };
+
+// PUT /items/:itemId/likes — Like an item
+const likeItem = (req, res) => {
+  const { itemId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
+  }
+  Item.findById(itemId)
+    .orFail(() => {
+      const error = new Error("Item not found");
+      error.statusCode = NOT_FOUND;
+      throw error;
+    })
+    .then(() =>
+      Item.findByIdAndUpdate(
+        itemId,
+        { $pull: { likes: req.user._id } },
+        { new: true }
+      )
+    )
+    .then((updatedItem) => res.send(updatedItem))
+    .catch((err) => {
+      console.error(err);
+      if (err.statusCode === NOT_FOUND) {
+        return res.status(NOT_FOUND).send({ message: err.message });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid ID format", error: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVICE_ERROR)
+        .send({ message: "Error unliking item", error: err.message });
+    });
+};
+
+// DELETE /items/:itemId/likes — Unlike an item
+const dislikeItem = (req, res) => {
+  const { itemId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
+  }
+
+  Item.findById(itemId)
+    .orFail(() => {
+      const error = new Error("Item not found");
+      error.statusCode = NOT_FOUND;
+      throw error;
+    })
+    .then(() =>
+      Item.findByIdAndUpdate(
+        itemId,
+        { $pull: { likes: req.user._id } },
+        { new: true }
+      )
+    )
+    .then((updatedItem) => res.send(updatedItem))
+    .catch((err) => {
+      console.error(err);
+      if (err.statusCode === NOT_FOUND) {
+        return res.status(NOT_FOUND).send({ message: err.message });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid ID format", error: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVICE_ERROR)
+        .send({ message: "Error unliking item", error: err.message });
+    });
+};
+
+module.exports = { getItems, createItem, deleteItem, likeItem, dislikeItem };

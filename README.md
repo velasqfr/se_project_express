@@ -15,6 +15,7 @@ The back-end project is focused on creating a server for the WTWR application. Y
 - Error Handling: Logs error for developers, prevents app crashes, and provides useful feedback to users
   - Example: middleware was used, a function used to catch and handle errors during the request–response cycle.
 - Input Validation: Integrated validator.js to ensure data integrity in our user input code before procesing it
+- Postman: An API platform used for testing and managing our APIs, particularly passing all of our potential errors
 
 ## Running the Project
 

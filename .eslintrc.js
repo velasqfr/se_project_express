@@ -20,7 +20,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "no-console": ["warn", { allow: ["error"] }],
-    "no-underscore-dangle": ["error", { allow: ["_id"] }],
+    "no-console": "off", // Allows console.log, console.error, etc
+    "no-underscore-dangle": ["error", { allow: ["_id"] }], // Allows usage of `req.user._id
   },
 };

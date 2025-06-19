@@ -13,7 +13,7 @@ const getItems = (req, res) => {
       console.error(err);
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Failed to retrieve users", error: err.message });
+        .send({ message: "Failed to retrieve items" });
     });
 };
 
@@ -27,13 +27,11 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid item data", error: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid item data" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Internal Server Error", error: err.message });
+        .send({ message: "Internal Server Error" });
     });
 };
 
@@ -41,29 +39,26 @@ const createItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  return Item.findById(itemId)
+  return Item.findByIdAndDelete(itemId)
     .orFail(() => {
       const error = new Error("Item not found");
       error.statusCode = NOT_FOUND;
       throw error;
     })
-    .then(() => Item.findByIdAndDelete(itemId))
     .then((deletedItem) =>
       res.send({ message: "Item deleted successfully", item: deletedItem })
     )
     .catch((err) => {
       console.error(err);
       if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid ID format", error: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Error deleting item", error: err.message });
+        .send({ message: "Error deleting item" });
     });
 };
 
@@ -80,7 +75,7 @@ const likeItem = (req, res) => {
     .then(() =>
       Item.findByIdAndUpdate(
         itemId,
-        { $addToSet: { likes: req.user._id } }, // ikeItem uses $addToSet to add a user ID to the likes array (and prevents duplicates)
+        { $addToSet: { likes: req.user._id } }, // likeItem uses $addToSet to add a user ID to the likes array (and prevents duplicates)
         { new: true }
       )
     )
@@ -88,16 +83,14 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid ID format", error: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Error liking item", error: err.message });
+        .send({ message: "Failed to like item" });
     });
 };
 
@@ -122,16 +115,14 @@ const dislikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid ID format", error: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Error unliking item", error: err.message });
+        .send({ message: "Error unliking item" });
     });
 };
 

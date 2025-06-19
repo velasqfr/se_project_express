@@ -18,13 +18,13 @@ const clothingItemSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return validator.isURL(v); //Uses validator.isURL() for solid URL checking
+        return validator.isURL(v); // Uses validator.isURL() for solid URL checking
       },
       message: "Invalid URL format",
     },
   },
   owner: {
-    //ObjectId, references user
+    // ObjectId, references user
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "user",
@@ -39,7 +39,7 @@ const clothingItemSchema = new mongoose.Schema({
     default: [], // default: [] ensures it's an empty array by default.
   },
   createdAt: {
-    //utomatically stores creation timestamp
+    // utomatically stores creation timestamp
     type: Date,
     default: Date.now,
   },

@@ -1,7 +1,8 @@
 const router = require("express").Router();
-const { getCurrentUser } = require("../controllers/users");
+const { getCurrentUser, updateCurrentUser } = require("../controllers/users");
 
-// GET /users/me - get current loggged-in user
-router.get("/me", getCurrentUser);
+router.get("/me", getCurrentUser); // route for get current loggged-in user /users/me
+
+router.patch("/me", updateCurrentUser); // route for updating user
 
 module.exports = router;

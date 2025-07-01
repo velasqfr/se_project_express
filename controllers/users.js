@@ -34,7 +34,7 @@ const createUser = (req, res) => {
     .then((user) => {
       const userResponse = user.toObject();
       delete userResponse.password; // remove sensitive info
-      return res.status(201).json(userResponse);
+      return res.status(201).send(userResponse);
     })
     .catch((err) => {
       console.error(err);
@@ -77,14 +77,14 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-// Login Controller
+// POST /Login Controller
 const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res
       .status(BAD_REQUEST)
-      .json({ message: "Email and password are required" });
+      .send({ message: "Email and password are required" });
   }
 
   return User.findUserByCredentials(email, password)
@@ -92,19 +92,59 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.json({ token });
+      return res.send({ token });
     })
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
         return res
           .status(UNAUTHORIZED)
-          .json({ message: "Incorrect email or password" });
+          .send({ message: "Incorrect email or password" });
       }
       console.error(err);
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .json({ message: "An error has occurred on the server" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
-module.exports = { getUsers, createUser, getCurrentUser, login };
+// PATCH /users/me — update profile
+const updateCurrentUser = (req, res) => {
+  const { name, avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, avatar },
+    {
+      new: true, // returns the updated document
+      runValidators: true, // ensures schema validation runs
+    }
+  )
+    .orFail(() => {
+      const error = new Error("User not found");
+      error.name = "DocumentNotFoundError";
+      throw error;
+    })
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid data for user update" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: "User Not Found" });
+      }
+      return res
+        .status(INTERNAL_SERVICE_ERROR)
+        .send({ message: "Failed to update user" });
+    });
+};
+
+module.exports = {
+  getUsers,
+  createUser,
+  getCurrentUser,
+  login,
+  updateCurrentUser,
+};

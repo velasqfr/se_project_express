@@ -1,8 +1,12 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVICE_ERROR,
+  CONFLICT,
 } = require("../utils/errors");
 
 // GET /users
@@ -19,12 +23,22 @@ const getUsers = (req, res) => {
 
 // POST /users
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
+  bcrypt
+    .hash(password, 10)
+    .then((hashedPassword) =>
+      User.create({ name, avatar, email, password: hashedPassword })
+    )
+    .then((user) => {
+      const { _id, name, avatar, email } = user;
+      res.status(201).send({ _id, name, avatar, email });
+    })
     .catch((err) => {
       console.error(err);
+      if (err.code === 11000) {
+        return res.status(CONFLICT).send({ message: "Email already in use" });
+      }
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid user data" });
       }
@@ -34,9 +48,10 @@ const createUser = (req, res) => {
     });
 };
 
-// Get /users/:userID
-const getUser = (req, res) => {
-  const { userId } = req.params;
+// Updated: GET /users/me
+const getCurrentUser = (req, res) => {
+  const userId = req.user._id; // get current user ID from auth middleware
+
   User.findById(userId)
     .orFail(() => {
       const error = new Error("User not found");
@@ -60,4 +75,20 @@ const getUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser };
+//login Controller
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: "Incorrect email or password" });
+    });
+};
+
+module.exports = { getUsers, createUser, getCurrentUser, login };

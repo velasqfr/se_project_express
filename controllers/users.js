@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const {
   BAD_REQUEST,
@@ -31,8 +31,9 @@ const createUser = (req, res) => {
       User.create({ name, avatar, email, password: hashedPassword })
     )
     .then((user) => {
-      const { _id, name, avatar, email } = user;
-      res.status(201).send({ _id, name, avatar, email });
+      const userResponse = user.toObject();
+      delete userResponse.password; // remove sensitive info
+      return res.status(201).json(userResponse);
     })
     .catch((err) => {
       console.error(err);
@@ -75,7 +76,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-//login Controller
+// Login Controller
 const login = (req, res) => {
   const { email, password } = req.body;
 
@@ -86,7 +87,7 @@ const login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch((err) => {
+    .catch((_err) => {
       res.status(401).send({ message: "Incorrect email or password" });
     });
 };

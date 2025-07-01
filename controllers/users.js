@@ -7,6 +7,7 @@ const {
   NOT_FOUND,
   INTERNAL_SERVICE_ERROR,
   CONFLICT,
+  UNAUTHORIZED,
 } = require("../utils/errors");
 
 // GET /users
@@ -80,19 +81,28 @@ const getCurrentUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST)
+      .json({ message: "Email and password are required" });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ token });
+      return res.json({ token });
     })
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
-        return res.status(401).json({ message: "Incorrect email or password" });
+        return res
+          .status(UNAUTHORIZED)
+          .json({ message: "Incorrect email or password" });
       }
+      console.error(err);
       return res
-        .status(500)
+        .status(INTERNAL_SERVICE_ERROR)
         .json({ message: "An error has occurred on the server" });
     });
 };

@@ -13,12 +13,12 @@ const {
 // GET /users
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.status(200).json(users))
     .catch((err) => {
       console.error(err);
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Failed to retrieve users" });
+        .json({ message: "Failed to retrieve users" });
     });
 };
 
@@ -34,19 +34,19 @@ const createUser = (req, res) => {
     .then((user) => {
       const userResponse = user.toObject();
       delete userResponse.password; // remove sensitive info
-      return res.status(201).send(userResponse);
+      return res.status(201).json(userResponse);
     })
     .catch((err) => {
       console.error(err);
       if (err.code === 11000) {
-        return res.status(CONFLICT).send({ message: "Email already in use" });
+        return res.status(CONFLICT).json({ message: "Email already in use" });
       }
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid user data" });
+        return res.status(BAD_REQUEST).json({ message: "Invalid user data" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Failed to create user" });
+        .json({ message: "Failed to create user" });
     });
 };
 
@@ -60,20 +60,20 @@ const getCurrentUser = (req, res) => {
       error.name = "DocumentNotFoundError";
       throw error;
     })
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(200).json(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "User not found" });
+        return res.status(NOT_FOUND).json({ message: "User not found" });
       }
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST)
-          .send({ message: "Invalid user ID format" });
+          .json({ message: "Invalid user ID format" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Failed to retrieve user" });
+        .json({ message: "Failed to retrieve user" });
     });
 };
 
@@ -84,7 +84,7 @@ const login = (req, res) => {
   if (!email || !password) {
     return res
       .status(BAD_REQUEST)
-      .send({ message: "Email and password are required" });
+      .json({ message: "Email and password are required" });
   }
 
   return User.findUserByCredentials(email, password)
@@ -92,18 +92,18 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.send({ token });
+      return res.json({ token });
     })
     .catch((err) => {
-      if (err.message === "Incorrect email or password") {
+      if (err.message === "Incorrect email address or password") {
         return res
           .status(UNAUTHORIZED)
-          .send({ message: "Incorrect email or password" });
+          .json({ message: "Incorrect email or password" });
       }
       console.error(err);
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "An error has occurred on the server" });
+        .json({ message: "An error has occurred on the server" });
     });
 };
 
@@ -124,20 +124,20 @@ const updateCurrentUser = (req, res) => {
       error.name = "DocumentNotFoundError";
       throw error;
     })
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(200).json(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST)
-          .send({ message: "Invalid data for user update" });
+          .json({ message: "Invalid data for user update" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "User Not Found" });
+        return res.status(NOT_FOUND).json({ message: "User Not Found" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Failed to update user" });
+        .json({ message: "Failed to update user" });
     });
 };
 

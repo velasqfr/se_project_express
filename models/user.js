@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, "Email is required "],
-    unique: true,
+    unique: true, // required for 11000 conflict error
     validate: {
       validator(value) {
         return validator.isEmail(value);
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Password is required."],
-    select: false, // This ensures the password won't be returned in queries by default
+    select: false, // Ensures the password won't be returned in queries by default
     // UNLESS explicitly asked for, which protects user data by default.
   },
 });

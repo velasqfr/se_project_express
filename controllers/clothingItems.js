@@ -3,17 +3,18 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVICE_ERROR,
+  FORBIDDEN,
 } = require("../utils/errors");
 
 // GET /items
 const getItems = (req, res) => {
   Item.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.status(200).json(items))
     .catch((err) => {
       console.error(err);
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Failed to retrieve items" });
+        .json({ message: "Failed to retrieve items" });
     });
 };
 
@@ -23,15 +24,15 @@ const createItem = (req, res) => {
   const owner = req.user._id;
 
   Item.create({ name, weather, imageUrl, owner })
-    .then((item) => res.status(201).send(item))
+    .then((item) => res.status(201).json(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid item data" });
+        return res.status(BAD_REQUEST).json({ message: "Invalid item data" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Internal Server Error" });
+        .json({ message: "Internal Server Error" });
     });
 };
 
@@ -39,26 +40,33 @@ const createItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  return Item.findByIdAndDelete(itemId)
+  Item.findById(itemId)
     .orFail(() => {
       const error = new Error("Item not found");
       error.statusCode = NOT_FOUND;
       throw error;
     })
-    .then((deletedItem) =>
-      res.send({ message: "Item deleted successfully", item: deletedItem })
-    )
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(FORBIDDEN)
+          .json({ message: "Forbidden: Not authorized to delete this item" });
+      }
+      return Item.findByIdAndDelete(itemId).then(() =>
+        res.json({ message: "Item deleted successfully", item })
+      );
+    })
     .catch((err) => {
       console.error(err);
       if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).json({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
+        return res.status(BAD_REQUEST).json({ message: "Invalid ID format" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Error deleting item" });
+        .json({ message: "Error deleting item" });
     });
 };
 
@@ -79,18 +87,18 @@ const likeItem = (req, res) => {
         { new: true }
       )
     )
-    .then((updatedItem) => res.send(updatedItem))
+    .then((updatedItem) => res.json(updatedItem))
     .catch((err) => {
       console.error(err);
       if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).json({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
+        return res.status(BAD_REQUEST).json({ message: "Invalid ID format" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Failed to like item" });
+        .json({ message: "Failed to like item" });
     });
 };
 
@@ -111,18 +119,18 @@ const dislikeItem = (req, res) => {
         { new: true }
       )
     )
-    .then((updatedItem) => res.send(updatedItem))
+    .then((updatedItem) => res.json(updatedItem))
     .catch((err) => {
       console.error(err);
       if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).json({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid ID format" });
+        return res.status(BAD_REQUEST).json({ message: "Invalid ID format" });
       }
       return res
         .status(INTERNAL_SERVICE_ERROR)
-        .send({ message: "Error unliking item" });
+        .json({ message: "Error unliking item" });
     });
 };
 

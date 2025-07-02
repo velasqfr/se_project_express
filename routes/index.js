@@ -8,17 +8,17 @@ const { createUser, login } = require("../controllers/users");
 // Public Routes
 router.post("/signin", login);
 router.post("/signup", createUser);
-router.use("/items", itemRouter);
 
-// Authorization Middleware - protects the router below
+// Authorization Middleware - protects the route below
 router.use(auth);
 
-// Protected Route
+// Now /items and /users require auth
+router.use("/items", itemRouter);
 router.use("/users", userRouter);
 
 // Fallback for undefines routes
 router.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: "Router not found" });
+  res.status(NOT_FOUND).json({ message: "Router not found" });
 });
 
 module.exports = router;

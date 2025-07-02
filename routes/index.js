@@ -5,7 +5,7 @@ const itemRouter = require("./clothingItems");
 const auth = require("../middlewares/auth");
 const { createUser, login } = require("../controllers/users");
 
-// Public Routes
+// Public Routes - 4. Add routes and controllers for signing up and signing in:
 router.post("/signin", login);
 router.post("/signup", createUser);
 

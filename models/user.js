@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
       },
       message: "You must enter a valid URL",
     },
-  },
+  }, // 1. Expand the user schema: Email & Password
   email: {
     type: String,
     required: [true, "Email is required "],
@@ -33,7 +33,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Password is required."],
-    select: false, // Ensures the password won't be returned in queries by default
+    select: false, // 8. Add a controller and route to modify the user data
+    // Ensures the password won't be returned in queries by default
     // UNLESS explicitly asked for, which protects user data by default.
   },
 });

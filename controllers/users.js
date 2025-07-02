@@ -22,7 +22,7 @@ const getUsers = (req, res) => {
     });
 };
 
-// POST /users
+// POST /users - 2. Update the createUser controller
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -50,7 +50,7 @@ const createUser = (req, res) => {
     });
 };
 
-// Updated: GET /users/me
+// 7. Update the GET /users/:id route
 const getCurrentUser = (req, res) => {
   const userId = req.user._id; // get current user ID from auth middleware
 
@@ -77,7 +77,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-// POST /Login Controller
+// POST /Login Controller - 3. Create the login controller
 const login = (req, res) => {
   const { email, password } = req.body;
 
@@ -107,7 +107,7 @@ const login = (req, res) => {
     });
 };
 
-// PATCH /users/me — update profile
+// PATCH /users/me — update profile - 8. Add a controller and route to modify the user data:
 const updateCurrentUser = (req, res) => {
   const { name, avatar } = req.body;
 

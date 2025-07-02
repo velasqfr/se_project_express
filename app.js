@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
+const cors = require("cors");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -19,6 +20,9 @@ app.use((req, res, next) => {
   };
   next();
 }); */
+
+// 11. Install cors: this package will allow requests from the client to the server to be processed
+app.use(cors());
 
 app.use(express.json());
 // app.use allows us to register routes & middleware

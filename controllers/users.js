@@ -10,18 +10,6 @@ const {
   UNAUTHORIZED,
 } = require("../utils/errors");
 
-// GET /users
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(200).json(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVICE_ERROR)
-        .json({ message: "Failed to retrieve users" });
-    });
-};
-
 // POST /users - 2. Update the createUser controller
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -40,8 +28,7 @@ const createUser = (req, res) => {
       console.error(err);
       if (err.code === 11000) {
         return res.status(CONFLICT).json({ message: "Email already in use" });
-      }
-      if (err.name === "ValidationError") {
+      } else if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).json({ message: "Invalid user data" });
       }
       return res
@@ -142,7 +129,6 @@ const updateCurrentUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   login,

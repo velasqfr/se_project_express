@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const indexRouter = require("./routes/index");
 const helmet = require("helmet");
+const indexRouter = require("./routes/index");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -24,14 +24,6 @@ app.use(cors());
 app.use(express.json());
 // app.use allows us to register routes & middleware
 // ("/") -> the root route
-
-// Middleware to inject the fixed user ID for tests
-app.use((req, res, next) => {
-  req.user = {
-    _id: "5d8b8592978f8bd833ca8133", // required by Practicum tests
-  };
-  next();
-});
 
 // Main Route
 app.use("/", indexRouter); // Mounting the users & item Router

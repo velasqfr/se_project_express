@@ -2,16 +2,25 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
-const {
+/*const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVICE_ERROR,
   CONFLICT,
   UNAUTHORIZED,
+} = require("../utils/errors"); */
+
+const {
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+  ConflictError,
+  InternalServiceError,
 } = require("../utils/errors");
 
 // POST /users - 2. Update the createUser controller
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   bcrypt
@@ -27,54 +36,43 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.code === 11000) {
-        return res.status(CONFLICT).json({ message: "Email already in use" });
+        return next(new ConflictError("Email already in use"));
       }
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).json({ message: "Invalid user data" });
+        return next(new BadRequestError("Invalid user data"));
       }
-      return res
-        .status(INTERNAL_SERVICE_ERROR)
-        .json({ message: "Failed to create user" });
+      return next(new InternalServiceError("Failed to create user"));
     });
 };
 
 // 7. Update the GET /users/:id route
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const userId = req.user._id; // get current user ID from auth middleware
 
   User.findById(userId)
     .orFail(() => {
-      const error = new Error("User not found");
-      error.name = "DocumentNotFoundError";
-      throw error;
+      throw new NotFoundError("User not found");
     })
     .then((user) => res.status(200).json(user))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).json({ message: "User not found" });
+      if (err instanceof NotFoundError) {
+        return next(err);
       }
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .json({ message: "Invalid user ID format" });
+        return next(new BadRequestError("Invalid user ID format"));
       }
-      return res
-        .status(INTERNAL_SERVICE_ERROR)
-        .json({ message: "Failed to retrieve user" });
+      return next(new InternalServiceError("Failed to retrieve user"));
     });
 };
 
 // POST /Login Controller - 3. Create the login controller
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(BAD_REQUEST)
-      .json({ message: "Email and password are required" });
+    throw new BadRequestError("Email and password are required");
   }
-
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -87,20 +85,21 @@ const login = (req, res) => {
       return res.json({ token, user: userResponse });
     })
     .catch((err) => {
-      if (err.message === "Incorrect email address or password") {
-        return res
-          .status(UNAUTHORIZED)
-          .json({ message: "Incorrect email or password" });
-      }
       console.error(err);
-      return res
-        .status(INTERNAL_SERVICE_ERROR)
-        .json({ message: "An error has occurred on the server" });
+      // If credentials are incorrect, pass UnauthorizedError
+      if (
+        err.name === "AuthError" ||
+        err.message === "Incorrect email or password"
+      ) {
+        return next(new UnauthorizedError("Incorrect email or password"));
+      }
+
+      return next(new InternalServiceError("Failed to login user"));
     });
 };
 
 // PATCH /users/me — update profile - 8. Add a controller and route to modify the user data:
-const updateCurrentUser = (req, res) => {
+const updateCurrentUser = (req, res, next) => {
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -112,24 +111,18 @@ const updateCurrentUser = (req, res) => {
     }
   )
     .orFail(() => {
-      const error = new Error("User not found");
-      error.name = "DocumentNotFoundError";
-      throw error;
+      throw new NotFoundError("User not found");
     })
     .then((user) => res.status(200).json(user))
     .catch((err) => {
       console.error(err);
+      if (err instanceof NotFoundError) {
+        return next(err);
+      }
       if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST)
-          .json({ message: "Invalid data for user update" });
+        return next(new BadRequestError("Invalid data for user update"));
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).json({ message: "User Not Found" });
-      }
-      return res
-        .status(INTERNAL_SERVICE_ERROR)
-        .json({ message: "Failed to update user" });
+      return next(new InternalServiceError("Failed to update user"));
     });
 };
 

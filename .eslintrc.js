@@ -22,5 +22,6 @@ module.exports = {
   rules: {
     "no-console": "off", // Allows console.log, console.error, etc
     "no-underscore-dangle": ["error", { allow: ["_id"] }], // Allows usage of `req.user._id
+    "no-unused-vars": ["error", { argsIgnorePattern: "next" }], //// Ignores unused 'next'
   },
 };

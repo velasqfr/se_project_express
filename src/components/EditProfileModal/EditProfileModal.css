@@ -1,0 +1,22 @@
+.modal__edit-content .modal__edit-name,
+.modal__edit-content .modal__avatar-url {
+  display: flex;
+  border: none;
+  border-bottom: 1px solid #000;
+  width: 100%;
+}
+
+.modal__edit-content .modal__edit-btn {
+  margin-top: -20px;
+  opacity: 1;
+  border-radius: 4px;
+  gap: 8px;
+}
+
+.modal__edit-content {
+  width: 496px;
+  height: 304px;
+  opacity: 1;
+  border-radius: 20px;
+  border-width: 1px;
+}

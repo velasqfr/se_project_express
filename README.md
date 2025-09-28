@@ -1,4 +1,4 @@
-## Description - WTWR: Weather-Based Wardrobe App (React + Express)
+## 👔 Description - WTWR: Weather-Based Wardrobe App (React + Express)
 
 - WWWR is a full-stack weather web app that helps users pick clothing items suited to the current weather. The app fetches weather data for a location and displays relevant garments. Users can register, log in, add, like, and delete clothing items, and manage their profiles. The app dynamically toggles temperature units between Fahrenheit and Celsius for user convenience.
 

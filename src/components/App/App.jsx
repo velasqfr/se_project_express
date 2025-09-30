@@ -13,7 +13,7 @@ import { getWeather, filterWeatherData } from "../../utils/weatherAPI";
 import { coordinates, APIkey } from "../../utils/constants";
 import Profile from "../Profile/Profile";
 import AddItemModal from "../AddItemModal/AddItemModal";
-//import { defaultClothingItems } from "../../utils/constants";
+// import { defaultClothingItems } from "../../utils/constants";
 import {
   getItems,
   addItem,
@@ -33,8 +33,8 @@ function App() {
     temp: { F: 999 },
     city: "",
   });
-  //[State variable, setter function]
-  //We ONLY ever call a setter function within the same component that it's state is defined in!
+  // [State variable, setter function]
+  // We ONLY ever call a setter function within the same component that it's state is defined in!
   const [clothingItems, setClothingItems] = useState([]);
   const [activeModal, setActiveModal] = useState(""); //an empty string means(Default) => no modal is active here
   const [selectedCard, setSelectedCard] = useState(null);
@@ -43,16 +43,16 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); //variable will be true when the user is logged in, and false otherwise
   const navigate = useNavigate();
 
-  //If the current temperature is "F" switch it to "C", if it is "C" switch it to "F"
+  // If the current temperature is "F" switch it to "C", if it is "C" switch it to "F"
   const handleToggleSwitchChange = () => {
     if (currentTemperatureUnit === "F") {
       setCurrentTemperatureUnit("C");
     } else {
       setCurrentTemperatureUnit("F");
     }
-  }; //or you can also do "setCurrentTemperatureUnit(currentTemperatureUnit === "F"? "C":"F");"
+  }; // or you can also do "setCurrentTemperatureUnit(currentTemperatureUnit === "F"? "C":"F");"
 
-  /////////////////////--Opening & closing the Modal--////////////////////
+  ///////////////////// --Opening & closing the Modal-- ////////////////////
   const handleAddClick = () => {
     console.log("Add button clicked");
     setActiveModal("add-garment");
@@ -63,7 +63,7 @@ function App() {
     setSelectedCard(null);
   };
 
-  //////////////////////--Opening the Register / Login Modal--/////////////////////
+  ////////////////////// --Opening the Register / Login Modal-- /////////////////////
   const openRegisterModal = () => setActiveModal("register");
 
   const openLoginModal = () => setActiveModal("login");
@@ -84,9 +84,9 @@ function App() {
       .catch(console.error);
   };
 
-  //////////////////-- Opening & closing the Card-Modal--//////////////////
+  ////////////////// -- Opening & closing the Card-Modal-- //////////////////
 
-  //////////////////--Clicking the Card to open the Modal--/////////////////
+  ////////////////// --Clicking the Card to open the Modal-- /////////////////
   const handleCardClick = (card) => {
     const token = localStorage.getItem("token");
 
@@ -98,7 +98,7 @@ function App() {
     setSelectedCard(card);
   };
 
-  ///////////////////////--Delete Card item Handler --////////////////////////////
+  /////////////////////// --Delete Card item Handler -- ////////////////////////////
   const handleDeleteCard = (cardToDelete) => {
     const token = localStorage.getItem("token");
 
@@ -113,7 +113,7 @@ function App() {
       .catch(console.error);
   };
 
-  //////////////////////--New Handler for card liking--////////////////////
+  ////////////////////// --New Handler for card liking-- ////////////////////
   const handleCardLike = ({ id, isLiked }) => {
     const token = localStorage.getItem("token");
 
@@ -121,11 +121,11 @@ function App() {
       console.error("User not authenticated");
       return;
     }
-    //Checks if the card is currently liked (isLiked)
-    //Calls either addCardLike or removeCardLike
+    // Checks if the card is currently liked (isLiked)
+    // Calls either addCardLike or removeCardLike
     const apiCall = isLiked ? removeCardLike : addCardLike;
 
-    //Replaces the liked card in state with the updated one from the server
+    // Replaces the liked card in state with the updated one from the server
     apiCall(id, token)
       .then((updatedCard) => {
         setClothingItems((prevCards) =>
@@ -135,13 +135,13 @@ function App() {
       .catch((err) => console.error("Like/unlike failed", err));
   };
 
-  //////////////////////--New Handler for confirmation deletion--////////////////////
+  ////////////////////// --New Handler for confirmation deletion-- ////////////////////
   const openConfirmationModal = (card) => {
     setSelectedCard(card);
     setActiveModal("delete-confirm");
   };
 
-  /////////////////////--New Handler for Register Submission--///////////////////////
+  ///////////////////// --New Handler for Register Submission-- ///////////////////////
   function handleRegisterSubmit({ name, avatar, email, password }) {
     console.log("Register submmit started");
 
@@ -163,12 +163,12 @@ function App() {
         console.error("Failed to register or login user", err);
       });
   }
-  //////////////////////////--New Handler for Login Submission--///////////////////////
+  ////////////////////////// --New Handler for Login Submission-- ///////////////////////
   function handleLoginSubmit({ email, password }) {
     return loginUser({ email, password })
       .then((data) => {
         localStorage.setItem("token", data.token);
-        return checkToken(data.token); //Fetch user data
+        return checkToken(data.token); // Fetch user data
       })
       .then((user) => {
         setCurrentUser(user); // sets user with correct data
@@ -178,11 +178,11 @@ function App() {
       })
       .catch((err) => {
         console.error("Login failed", err);
-        return false; //failure
+        return false; // failure
       });
   }
 
-  //////////////////////////--New Handler for Logging Out --///////////////////////
+  ////////////////////////// --New Handler for Logging Out -- ///////////////////////
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
@@ -190,19 +190,19 @@ function App() {
     navigate("/", { replace: true });
   };
 
-  ////////////////////////////--Edit Profile Modal--/////////////////////////////////
+  //////////////////////////// --Edit Profile Modal-- /////////////////////////////////
   const handleEditProfileClick = () => {
-    setActiveModal("edit-profile"); //EditProfileModal opens when activeModal === "edit-profile"
+    setActiveModal("edit-profile"); // EditProfileModal opens when activeModal === "edit-profile"
   };
 
   const handleCloseEditModal = () => {
     setActiveModal("");
   };
 
-  //////////////////////////--New Handler for Updating User in EditProfileModal--///////////////////////
+  ////////////////////////// --New Handler for Updating User in EditProfileModal-- ///////////////////////
   const handleUpdateUser = ({ name, avatar }) => {
     const token = localStorage.getItem("token");
-    return updateUserProfile({ name, avatar }, token) //The form submits data to your backend and updates the app stat
+    return updateUserProfile({ name, avatar }, token) // The form submits data to your backend and updates the app stat
       .then((updatedUser) => {
         setCurrentUser(updatedUser);
         setActiveModal("");
@@ -212,17 +212,17 @@ function App() {
       });
   };
 
-  //////////////////////-New Handler for Wiriging up Switch Handlers--///////////////////
+  ////////////////////// -New Handler for Wiriging up Switch Handlers-- ///////////////////
   const onSwitchToRegister = () => setActiveModal("register");
   const switchToLogin = () => setActiveModal("login");
 
-  ///////////////////////--Clicking the Card to open the Modal--///////////////////////
+  /////////////////////// --Clicking the Card to open the Modal-- ///////////////////////
 
-  ///////////////////////--API Weather - when the page loads/////////////////////////
-  //the way a useEffect works, if you pass a second arguement that is an empty array, it will get run (&one time only) when the component first loads
+  /////////////////////// --API Weather - when the page loads-- /////////////////////////
+  // the way a useEffect works, if you pass a second arguement that is an empty array, it will get run (&one time only) when the component first loads
 
   useEffect(() => {
-    //We are passing the object 'coordinates' as the first firs property, and then structuring the property that is in the object
+    // We are passing the object 'coordinates' as the first firs property, and then structuring the property that is in the object
     getWeather(coordinates, APIkey)
       .then((data) => {
         const filteredData = filterWeatherData(data);
@@ -236,7 +236,7 @@ function App() {
     getItems(token)
       .then((data) => {
         console.log(data);
-        //set the clothing items
+        // set the clothing items
         if (Array.isArray(data)) {
           setClothingItems(data);
         }
@@ -244,14 +244,14 @@ function App() {
       .catch(console.error);
   }, [currentUser]);
 
-  /////////////////////////////--Check if there is a tokem--//////////////////////////////
+  ///////////////////////////// --Check if there is a tokem-- //////////////////////////////
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       checkToken(token)
         .then((user) => {
           console.log("User info from valid token:", user);
-          //this keeps user logged in after refreshing the page
+          // this keeps user logged in after refreshing the page
           setCurrentUser(user);
           setIsLoggedIn(true);
         })
@@ -259,7 +259,7 @@ function App() {
           console.error("Token not valid", err);
         });
     }
-  }, []); //[] - Without it, the effect might run more often than you want
+  }, []); // [] - Without it, the effect might run more often than you want
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -281,7 +281,7 @@ function App() {
               <Route
                 path="/"
                 element={
-                  <Main //added because it the main route of the page
+                  <Main // added because it the main route of the page
                     weatherData={weatherData}
                     handleCardClick={handleCardClick}
                     clothingItems={clothingItems}

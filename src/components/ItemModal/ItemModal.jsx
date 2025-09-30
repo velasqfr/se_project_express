@@ -8,13 +8,13 @@ function ItemModal({ activeModal, onClose, card, onDeleteClick }) {
   // Hook to handle ESC key and overlay click only when modal is open
   useModalClose(activeModal === "preview", onClose);
 
-  //This gives us information about the user who is currently logged in, like their unique ID (_id), name, avatar, etc.
+  // This gives us information about the user who is currently logged in, like their unique ID (_id), name, avatar, etc.
   const currentUser = useContext(CurrentUserContext);
   if (!card) return null;
 
   // Checking if the current user is the owner of the current clothing item
-  //If they match, it means the item was created/owned by the current user.
-  //The variable isOwn will be true if the logged-in user owns the item, otherwise false
+  // If they match, it means the item was created/owned by the current user.
+  // The variable isOwn will be true if the logged-in user owns the item, otherwise false
   const isOwn = card.owner === currentUser._id;
 
   return (

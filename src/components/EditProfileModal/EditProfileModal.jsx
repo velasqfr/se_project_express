@@ -1,4 +1,4 @@
-//Modal that lets the user update their name and avatar URL.
+// Modal that lets the user update their name and avatar URL.
 import { useState, useEffect, useContext } from "react";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 import "./EditProfileModal.css";
@@ -15,18 +15,18 @@ export default function EditProfileModal({ isOpen, onClose, onSubmit }) {
     if (currentUser && isOpen) {
       setName(currentUser.name || "");
       setAvatar(currentUser.avatar || "");
-      //This fills the form with the current user's data (avatar & name) when the modal opens
+      // This fills the form with the current user's data (avatar & name) when the modal opens
       // ||"" -> in case name or avatar is undefined, we don’t want to break the form
     }
   }, [currentUser, isOpen]);
 
-  //function that runs when users clicks the "save" button
+  // function that runs when users clicks the "save" button
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitting(true); //start submission
+    setIsSubmitting(true); // start submission
 
     return onSubmit({ name, avatar }).finally(() => {
-      setIsSubmitting(false); //done submitting
+      setIsSubmitting(false); // done submitting
     });
   };
 

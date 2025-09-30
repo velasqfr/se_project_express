@@ -4,7 +4,7 @@ import ItemCard from "../ItemCard/ItemCard";
 import { useContext } from "react";
 import CurrentTemperatureUnitContext from "../../contexts/CurrentTemperatureUnitContext";
 
-//THe Main component includes weatherCard, ItemCard compoments
+// The Main component includes weatherCard, ItemCard compoments
 function Main({ weatherData, handleCardClick, clothingItems, onCardLike }) {
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
 
@@ -39,7 +39,7 @@ function Main({ weatherData, handleCardClick, clothingItems, onCardLike }) {
 export default Main;
 
 /* wraping items in curly braces allows you to escape back to JS*/
-/*the key always needs to go on the outermost piece of the markup you are renduring 
+/*the key always needs to go on the outermost piece of the markup you are renduring
 (if it is a component, it goes in the component) */
 
 /*We are passing 'handleCardClick' as a prop from the <main /> component in App.jsx and then we are destructuring the prop inside the main component in Main.jsx

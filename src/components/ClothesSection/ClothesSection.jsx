@@ -3,17 +3,17 @@ import "./ClothesSection.css";
 import ItemCard from "../ItemCard/ItemCard";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 
-//The ClothesSection component includes the ItemCard Component
+// The ClothesSection component includes the ItemCard Component
 function ClothesSection({
   clothingItems,
   handleCardClick,
   handleAddClick,
   onCardLike,
 }) {
-  //This gives us information about the user who is currently logged in, like their unique ID (_id), name, avatar, etc.
+  // This gives us information about the user who is currently logged in, like their unique ID (_id), name, avatar, etc.
   const currentUser = useContext(CurrentUserContext);
 
-  //Filtering clothing items to only include items owned by the currentUser._id
+  // Filtering clothing items to only include items owned by the currentUser._id
   const userClothingItems = clothingItems.filter(
     (item) => item.owner.toString() === currentUser._id.toString()
   );
@@ -30,7 +30,7 @@ function ClothesSection({
           + Add New
         </button>
       </div>
-      {userClothingItems.length === 0 ? ( //If no items are owned
+      {userClothingItems.length === 0 ? ( // If no items are owned
         <p className="clothes-section__empty">You have no items yet.</p>
       ) : (
         <ul className="cards__list">
@@ -39,7 +39,7 @@ function ClothesSection({
               <ItemCard
                 key={item._id}
                 item={item}
-                onCardClick={handleCardClick} //Pass as prop
+                onCardClick={handleCardClick} // Pass as prop
                 onCardLike={onCardLike}
               />
             );

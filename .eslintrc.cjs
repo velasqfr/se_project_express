@@ -18,7 +18,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     // Disable prop-types validation.
-    "react/prop-types": 0, //prop-types rules is used to validate the types of react-props and the "0" disables the rule
+    "react/prop-types": 0, // prop-types rules is used to validate the types of react-props and the "0" disables the rule
   },
 
   // Add an overrides array. Without this, ESLint could only be run via

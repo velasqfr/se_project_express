@@ -8,7 +8,7 @@ import avatar from "../../assets/avatar.png";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 
-//THe Header component includes the ToggleSwitch component
+// The Header component includes the ToggleSwitch component
 function Header({
   handleAddClick,
   weatherData,
@@ -16,7 +16,7 @@ function Header({
   isLoggedIn,
   handleRegisterClick,
 }) {
-  //This gives us information about the user who is currently logged in, like their unique ID (_id), name, avatar, etc.
+  // This gives us information about the user who is currently logged in, like their unique ID (_id), name, avatar, etc.
   const currentUser = useContext(CurrentUserContext);
 
   const currentDate = new Date().toLocaleString("default", {
@@ -48,7 +48,7 @@ function Header({
       // show a default fallback avatar image.
       return (
         <img
-          src={avatar} //default avatar
+          src={avatar} // default avatar
           alt="User avatar"
           className="header__avatar"
         />

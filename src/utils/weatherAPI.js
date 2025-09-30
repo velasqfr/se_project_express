@@ -21,7 +21,7 @@ export const filterWeatherData = (data) => {
 
 const isDay = ({ sunrise, sunset }, now) => {
   return sunrise * 1000 < now && now < sunset * 1000; //if now is in between sunrise & sunset, it'll return true
-}; //we're converting sunrise from seconds to milliseconds (1000 mili in a sec)
+}; // we're converting sunrise from seconds to milliseconds (1000 mili in a sec)
 
 const getWeatherType = (temperature) => {
   if (temperature > 86) {
@@ -49,10 +49,10 @@ const mapCondition = (apiCondition) => {
   return conditionMap[apiCondition] || "clear";
 };
 
-//IF res.ok (the response) has an ok property that it is true, then we are going to parse the ajacent in the response
+// IF res.ok (the response) has an ok property that it is true, then we are going to parse the ajacent in the response
 // & return it, IF not then we're going to reject the promise
 
-///////////////////////////OPTIONAL TASK:////////////////////////////////////////////////
+/////////////////////////// OPTIONAL TASK: ////////////////////////////////////////////////
 
 // 1. Added "mapCondition()" to translate weather conditions like "storm, fog, snow, rain"//
 // 2. Replaced ".toLowerCase()" with a call to "mapCondition()"

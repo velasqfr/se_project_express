@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const { NOT_FOUND } = require("../utils/errors");
 const userRouter = require("./users");
 const itemRouter = require("./clothingItems");
 const auth = require("../middlewares/auth");
@@ -21,10 +20,5 @@ router.use(auth);
 // Now /items and /users require auth
 router.use("/items", itemRouter);
 router.use("/users", userRouter);
-
-// Fallback for undefines routes - Catches 404
-router.use((req, res) => {
-  res.status(NOT_FOUND).json({ message: "Router not found" });
-});
 
 module.exports = router;

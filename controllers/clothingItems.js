@@ -1,5 +1,5 @@
 const Item = require("../models/clothingItem");
-/*const {
+/* const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVICE_ERROR,
@@ -8,12 +8,10 @@ const Item = require("../models/clothingItem");
 
 const {
   BadRequestError,
-  UnauthorizedError,
   ForbiddenError,
   NotFoundError,
-  ConflictError,
   InternalServiceError,
-} = require("../utils/errors");
+} = require("../errors");
 
 // GET /items
 const getItems = (req, res, next) => {

@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
-/*const {
+/* const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVICE_ERROR,
@@ -13,11 +13,10 @@ const { JWT_SECRET } = require("../utils/config");
 const {
   BadRequestError,
   UnauthorizedError,
-  ForbiddenError,
   NotFoundError,
   ConflictError,
   InternalServiceError,
-} = require("../utils/errors");
+} = require("../errors");
 
 // POST /users - 2. Update the createUser controller
 const createUser = (req, res, next) => {

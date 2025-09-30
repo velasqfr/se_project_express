@@ -34,7 +34,7 @@ export default function LoginModal({
     e.preventDefault();
     const success = await onLoginModalSubmit({ email, password });
     if (!success) {
-      setLoginError(true); //show error styles
+      setLoginError(true); // show error styles
     } else {
       setLoginError(false); // clear error styles
     }

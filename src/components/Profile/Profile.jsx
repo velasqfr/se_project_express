@@ -4,7 +4,7 @@ import ClothesSection from "../ClothesSection/ClothesSection";
 import SideBar from "../SideBar/SideBar";
 import "./Profile.css";
 
-//THe Profile component contains SideBar and ClothesSection components
+// The Profile component contains SideBar and ClothesSection components
 function Profile({
   handleCardClick,
   clothingItems,

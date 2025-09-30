@@ -9,6 +9,8 @@ const indexRouter = require("./routes/index");
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
+const { NotFoundError } = require("./errors");
+
 const app = express();
 const { PORT = 3001 } = process.env;
 
@@ -35,6 +37,11 @@ app.use(requestLogger);
 
 // Main Route
 app.use("/", indexRouter); // Mounting the users & item Router
+
+// Handle unknown routes
+app.use((req, res, next) => {
+  next(new NotFoundError("Requested resource not found"));
+});
 
 // Error Logger AFTER routes, BEFORE error handlers
 app.use(errorLogger);

@@ -17,7 +17,7 @@ function ItemCard({ item, onCardClick, onCardLike }) {
 
   // Handle clicking the like button
   const handleLike = () => {
-    onCardLike({ id: item._id, isLiked }); //Pass isLiked status to toggle it
+    onCardLike({ id: item._id, isLiked }); // Pass isLiked status to toggle it
   };
 
   return (

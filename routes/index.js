@@ -3,7 +3,7 @@ const userRouter = require("./users");
 const itemRouter = require("./clothingItems");
 const auth = require("../middlewares/auth");
 const { createUser, login } = require("../controllers/users");
-
+const { NotFoundError } = require("../errors");
 const {
   validateCreateUser,
   validateLogInUser,
@@ -20,5 +20,10 @@ router.use(auth);
 // Now /items and /users require auth
 router.use("/items", itemRouter);
 router.use("/users", userRouter);
+
+// Fallback for undefined routes — centralized error handling
+router.use((req, res, next) => {
+  next(new NotFoundError("Requested resource not found"));
+});
 
 module.exports = router;

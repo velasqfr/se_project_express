@@ -1,5 +1,4 @@
-const { UNAUTHORIZED } = require ("../utils/errors")
-
+const { UNAUTHORIZED } = require("../utils/errors");
 
 class UnauthorizedError extends Error {
   constructor(message) {
@@ -8,4 +7,4 @@ class UnauthorizedError extends Error {
   }
 }
 
-module.exports = UnauthorizedError
+module.exports = UnauthorizedError;

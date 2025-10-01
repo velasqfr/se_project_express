@@ -1,6 +1,5 @@
 const { INTERNAL_SERVICE_ERROR } = require("../utils/errors");
 
-
 class InternalServiceError extends Error {
   constructor(message) {
     super(message);
@@ -8,5 +7,4 @@ class InternalServiceError extends Error {
   }
 }
 
-
-module.exports = InternalServiceError
+module.exports = InternalServiceError;

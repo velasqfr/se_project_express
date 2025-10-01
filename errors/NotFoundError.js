@@ -1,4 +1,4 @@
-const NOT_FOUND = 404;
+const { NOT_FOUND } = require("../utils/errors");
 
 class NotFoundError extends Error {
   constructor(message) {
@@ -7,4 +7,4 @@ class NotFoundError extends Error {
   }
 }
 
-  module.exports = NotFoundError;
+module.exports = NotFoundError;

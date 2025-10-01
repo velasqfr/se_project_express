@@ -88,9 +88,11 @@ const login = (req, res, next) => {
       // If credentials are incorrect, pass UnauthorizedError
       if (
         err.name === "AuthError" ||
-        err.message === "Incorrect email or password"
+        err.message === "Incorrect email address or password"
       ) {
-        return next(new UnauthorizedError("Incorrect email or password"));
+        return next(
+          new UnauthorizedError("Incorrect email address or password")
+        );
       }
 
       return next(new InternalServiceError("Failed to login user"));

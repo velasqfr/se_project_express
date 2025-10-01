@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const helmet = require("helmet");
 const { errors } = require("celebrate");
+const rateLimiter = require("./middlewares/rateLimiter");
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
@@ -16,6 +17,9 @@ const { PORT = 3001 } = process.env;
 
 // Use Helmet for basic security
 app.use(helmet());
+
+// apply rate limiter to all requests
+app.use(rateLimiter);
 
 // Connect to MongoDb
 mongoose
